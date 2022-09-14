@@ -13,7 +13,7 @@ namespace LuaBundler
         private string _workDir = ".";
         private readonly StringBuilder _distCode = new StringBuilder();
         //TODO: "", ' 패턴 추가하기
-        private readonly Regex _regex = new Regex("require\\(\"([0-9\\/a-zA-Z_-]+)\"\\)");
+        private readonly Regex _regex = new Regex("require[\\(]?[\"\']([0-9\\/a-zA-Z_-]+)[\"\'][\\)]?");
         private readonly Dictionary<string, bool> _requires = new Dictionary<string, bool>();
         private readonly HashSet<string> _bundledFiles = new HashSet<string>();
 
@@ -24,12 +24,11 @@ namespace LuaBundler
 -- Bundled At: {2}";
         private const string CodeHeader = 
 @"local __bundle_require, __bundle_loaded, __bundle_register, __bundle_modules = (function(superRequire)
-	local loadingPlaceholder = {[{}] = true}
-
-	local register
-	local modules = {}
-
 	local require
+	local register
+
+	local loadingPlaceholder = { [{}] = true }
+	local modules = {}
 	local loaded = {}
 
 	register = function(name, body)
@@ -48,7 +47,7 @@ namespace LuaBundler
 	    else
 		    if not modules[name] then
 			    if not superRequire then
-				    local identifier = type(name) == ""string"" and '\""' .. name .. '\""' or tostring(name)
+				    local identifier = type(name) == ""string"" and ""\"""" .. name .. ""\"""" or tostring(name)
                     error(""Tried to require "" .. identifier .. "", but no such module has been registered"")
                 else
                     return superRequire(name)
@@ -70,6 +69,7 @@ end)(require)
 __bundle_register(""{0}"", function(require, _LOADED, __bundle_register, __bundle_modules)
 {1}
 end)";
+        // Executor
         private const string CodeFooter = "\n__bundle_require(\"{0}\")";
         #endregion
         
