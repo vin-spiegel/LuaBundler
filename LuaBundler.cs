@@ -66,7 +66,11 @@ namespace LuaBundler
     return require, loaded, register, modules
 end)(require)
 ";
-        private const string CodeFooter = "\nreturn __bundle_require(\"{0}\")";
+        private const string CodeBody = @"
+__bundle_register(""{0}"", function(require, _LOADED, __bundle_register, __bundle_modules)
+{1}
+end)";
+        private const string CodeFooter = "\n__bundle_require(\"{0}\")";
         #endregion
         
         #region Utility
@@ -204,12 +208,9 @@ end)(require)
                 return;
 
             var file = File.ReadAllText(filePath);
-
-            _distCode
-                .Append($"\n__bundle_register(\"{name}\", function(require, _LOADED, __bundle_register, __bundle_modules)\n")
-                .Append(file)
-                .Append("\nend)");
             
+            // 코드 삽입
+            _distCode.Append(string.Format(CodeBody, name, file));
             _requires[name] = true;
             
             // logger

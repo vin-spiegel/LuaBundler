@@ -16,9 +16,9 @@ namespace LuaBundler
         {
             var bundler = new LuaBundler();   
             
-            bundler.ToFile(Path.Combine(Root, @"src\Scripts\index.lua"), Path.Combine(Root, @"Scripts\___bundle___.lua"));
+            bundler.ToFile(Path.Combine(Root, @"src\Scripts\index.lua"), Path.Combine(Root, @"Scripts\___bundle.lua"));
             bundler.Clear();
-            bundler.ToFile(Path.Combine(Root, @"src\ServerScripts\index.lua"), Path.Combine(Root, @"ServerScripts\___bundle___.lua"));
+            bundler.ToFile(Path.Combine(Root, @"src\ServerScripts\index.lua"), Path.Combine(Root, @"ServerScripts\___bundle.lua"));
             Console.WriteLine("Success Bundle");
         }
     }
